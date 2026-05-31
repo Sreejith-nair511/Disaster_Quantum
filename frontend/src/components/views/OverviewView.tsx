@@ -17,13 +17,19 @@ export default function OverviewView() {
   
   const [injecting, setInjecting] = useState<string | null>(null);
   const [resolvingId, setResolvingId] = useState<number | null>(null);
+  const [lastAlertRefresh, setLastAlertRefresh] = useState<string | null>(null);
+
+  const updateAlertFeed = (alerts: any[]) => {
+    setAlerts(alerts);
+    setLastAlertRefresh(new Date().toLocaleTimeString());
+  };
 
   useEffect(() => {
     const loadActiveAlerts = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/alerts');
         if (Array.isArray(response.data)) {
-          setAlerts(response.data);
+          updateAlertFeed(response.data);
         }
       } catch (err) {
         console.error('[ALERTS] Failed to load active alerts.', err);
@@ -31,7 +37,7 @@ export default function OverviewView() {
     };
 
     loadActiveAlerts();
-  }, [setAlerts]);
+  }, []);
 
   // Trigger simulated disaster anomaly via backend
   const handleTriggerAnomaly = async (hazardType: string) => {
@@ -58,7 +64,7 @@ export default function OverviewView() {
       clearAlert(id);
       const response = await axios.get('http://localhost:8000/api/alerts');
       if (Array.isArray(response.data)) {
-        setAlerts(response.data);
+        updateAlertFeed(response.data);
       }
     } catch (err) {
       console.error(err);
@@ -179,9 +185,18 @@ export default function OverviewView() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active Warning Alerts Panel */}
         <div className="glass-panel p-5 rounded-xl border border-slate-800 lg:col-span-2 flex flex-col h-[400px]">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-800">
-            <ShieldAlert className="w-5 h-5 text-rose-500" />
-            <h3 className="text-sm font-semibold tracking-wider text-slate-200 uppercase">Incident Management Console</h3>
+          <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="w-5 h-5 text-rose-500" />
+              <h3 className="text-sm font-semibold tracking-wider text-slate-200 uppercase">Incident Management Console</h3>
+            </div>
+            {lastAlertRefresh ? (
+              <span className="text-[10px] font-mono uppercase text-slate-400 tracking-[0.16em]">
+                Updated {lastAlertRefresh}
+              </span>
+            ) : (
+              <span className="text-[10px] font-mono uppercase text-slate-500 tracking-[0.16em]">Loading alerts...</span>
+            )}
           </div>
           
           <div className="flex-1 overflow-y-auto space-y-3 pr-2">
