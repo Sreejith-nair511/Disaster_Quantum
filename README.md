@@ -1,4 +1,4 @@
-# 🛡️ AEGIS — India Disaster Intelligence Operations Platform
+# AEGIS — India Disaster Intelligence Operations Platform
 
 > **Real-time AI-powered disaster prediction, quantum-inspired resource optimization, and live GIS command mapping for India's 5 highest-risk disaster zones.**
 
@@ -9,7 +9,7 @@
 
 ---
 
-## 🌏 India Coverage
+## India Coverage
 
 AEGIS monitors **5 real high-risk disaster zones** across India:
 
@@ -25,22 +25,22 @@ AEGIS monitors **5 real high-risk disaster zones** across India:
 
 ---
 
-## 🚀 Features
+## Features
 
-### 🧠 AI Risk Prediction
+### AI Risk Prediction
 - **Random Forest Classifier** trained on 5,000 India-calibrated disaster scenarios
 - Classifies: Flood, Earthquake, Wildfire, Cyclone, Landslide, No Hazard
 - Real-time probability vectors streamed via WebSocket
 - Manual scenario sandbox with parameter sliders
 
-### 🗺️ Live GIS Tactical Map
+### Live GIS Tactical Map
 - Interactive Leaflet.js map centered on India
 - Real coordinates for all 5 disaster zones
 - Dynamic threat radius circles (scale with AI risk score)
 - NDRF deployment route lines from New Delhi HQ
 - Clickable zone popups with live resource allocation data
 
-### ⚡ Quantum-Inspired Resource Optimizer
+### Quantum-Inspired Resource Optimizer
 Three optimization algorithms for NDRF resource dispatch:
 - **Quantum Genetic Algorithm** — chromosome-based evolution with quantum rotation gates
 - **Particle Swarm Optimization** — swarm intelligence with inertia damping
@@ -48,49 +48,49 @@ Three optimization algorithms for NDRF resource dispatch:
 
 Resources optimized: Ambulances (40), NDRF Teams (30), Medical Supplies (250t), Relief Camps (120)
 
-### 📡 Real-Time Telemetry
+### Real-Time Telemetry
 - WebSocket stream at 1.5s intervals
 - India-calibrated sensor simulation (monsoon baseline)
 - 5 injectable disaster scenarios (Brahmaputra flood, Himalayan quake, Bay of Bengal cyclone, etc.)
 - Auto-alert system with 75%+ probability threshold
 
-### 📊 Intelligence Analytics
+### Intelligence Analytics
 - Historical telemetry charts (SQLite-backed)
 - ML model accuracy metrics
 - Optimization run history
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 AEGIS/
-├── backend/          # FastAPI + WebSocket server
-│   └── app/
-│       ├── main.py       # API routes + WebSocket endpoint
-│       ├── config.py     # Settings + demo users
-│       ├── database.py   # SQLite persistence
-│       └── security.py   # JWT auth
-├── ml/               # Machine learning layer
-│   ├── model.py          # Random Forest + Logistic Regression
-│   └── dataset.py        # India-calibrated synthetic dataset
-├── optimizer/        # Quantum-inspired optimization
-│   ├── base.py           # India zones + NDRF resources
-│   ├── genetic.py        # Quantum Genetic Algorithm
-│   ├── pso.py            # Particle Swarm Optimization
-│   └── annealing.py      # Simulated Annealing
-├── simulation/       # Sensor telemetry simulation
-│   └── sensor_sim.py     # India monsoon-calibrated simulator
-└── frontend/         # Next.js 16 dashboard
-    └── src/
-        ├── app/          # Layout + main page
-        ├── components/   # Map + 5 view components
-        └── store/        # Zustand state management
+ backend/ # FastAPI + WebSocket server
+ app/
+ main.py # API routes + WebSocket endpoint
+ config.py # Settings + demo users
+ database.py # SQLite persistence
+ security.py # JWT auth
+ ml/ # Machine learning layer
+ model.py # Random Forest + Logistic Regression
+ dataset.py # India-calibrated synthetic dataset
+ optimizer/ # Quantum-inspired optimization
+ base.py # India zones + NDRF resources
+ genetic.py # Quantum Genetic Algorithm
+ pso.py # Particle Swarm Optimization
+ annealing.py # Simulated Annealing
+ simulation/ # Sensor telemetry simulation
+ sensor_sim.py # India monsoon-calibrated simulator
+ frontend/ # Next.js 16 dashboard
+ src/
+ app/ # Layout + main page
+ components/ # Map + 5 view components
+ store/ # Zustand state management
 ```
 
 ---
 
-## ⚙️ Setup & Run
+## Setup & Run
 
 ### Prerequisites
 - Python 3.10+
@@ -122,7 +122,7 @@ npm run dev
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -137,7 +137,7 @@ npm run dev
 
 ---
 
-## 🇮🇳 India Disaster Context
+## India Disaster Context
 
 India is one of the world's most disaster-prone nations:
 - **Floods** affect 40M+ people annually (Brahmaputra, Ganga, Godavari basins)
