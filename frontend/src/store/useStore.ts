@@ -87,20 +87,23 @@ interface AppState {
   logout: () => void;
   updateLiveFeed: (data: { telemetry: Telemetry; risk_assessment: RiskAssessment; active_alerts: Alert[] }) => void;
   addAlert: (alert: Alert) => void;
+  setAlerts: (alerts: Alert[]) => void;
+  removeAlert: (id: number) => void;
+  clearAlert: (id: number) => void;
   setAlgorithm: (alg: 'genetic' | 'pso' | 'annealing') => void;
   setAllocationResults: (results: OptimizationResult | null) => void;
   setOptimizing: (val: boolean) => void;
 }
 
-// Initial Telemetry placeholder
+// India monsoon-season baseline telemetry — realistic values shown before WebSocket connects
 const initialTelemetry: Telemetry = {
-  rainfall: 0.0,
-  temperature: 20.0,
-  humidity: 50.0,
-  river_level: 1.0,
-  wind_speed: 10.0,
-  seismic_activity: 0.01,
-  land_slope: 25.0
+  rainfall: 38.5,
+  temperature: 32.4,
+  humidity: 74.0,
+  river_level: 2.8,
+  wind_speed: 19.5,
+  seismic_activity: 0.08,
+  land_slope: 27.5
 };
 
 export const useStore = create<AppState>((set) => ({
@@ -148,6 +151,16 @@ export const useStore = create<AppState>((set) => ({
       return { activeAlerts: [alert, ...state.activeAlerts] };
     });
   },
+
+  setAlerts: (alerts) => set({ activeAlerts: alerts }),
+
+  removeAlert: (id) => set((state) => ({
+    activeAlerts: state.activeAlerts.filter((a) => a.id !== id)
+  })),
+
+  clearAlert: (id) => set((state) => ({
+    activeAlerts: state.activeAlerts.filter((a) => a.id !== id)
+  })),
   
   setAlgorithm: (selectedAlgorithm) => set({ selectedAlgorithm }),
   setAllocationResults: (allocationResults) => set({ allocationResults }),

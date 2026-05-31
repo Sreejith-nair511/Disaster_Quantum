@@ -1,7 +1,7 @@
 'use client';
 
 import { useStore } from '@/store/useStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { 
   CloudRain, Thermometer, Droplet, Waves, Wind, Activity, 
@@ -12,9 +12,26 @@ export default function OverviewView() {
   const telemetry = useStore((state) => state.telemetry);
   const riskAssessment = useStore((state) => state.riskAssessment);
   const activeAlerts = useStore((state) => state.activeAlerts);
+  const setAlerts = useStore((state) => state.setAlerts);
+  const clearAlert = useStore((state) => state.clearAlert);
   
   const [injecting, setInjecting] = useState<string | null>(null);
   const [resolvingId, setResolvingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const loadActiveAlerts = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/alerts');
+        if (Array.isArray(response.data)) {
+          setAlerts(response.data);
+        }
+      } catch (err) {
+        console.error('[ALERTS] Failed to load active alerts.', err);
+      }
+    };
+
+    loadActiveAlerts();
+  }, [setAlerts]);
 
   // Trigger simulated disaster anomaly via backend
   const handleTriggerAnomaly = async (hazardType: string) => {
@@ -38,6 +55,11 @@ export default function OverviewView() {
       await axios.post('http://localhost:8000/api/alerts/resolve', {
         alert_id: id
       });
+      clearAlert(id);
+      const response = await axios.get('http://localhost:8000/api/alerts');
+      if (Array.isArray(response.data)) {
+        setAlerts(response.data);
+      }
     } catch (err) {
       console.error(err);
     } finally {
