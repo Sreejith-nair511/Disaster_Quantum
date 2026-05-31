@@ -36,7 +36,7 @@ export default function PredictionView() {
     }
   };
 
-  // Color mapping per disaster type
+  // Color mapping per disaster type — covers all 7 India disaster classes
   const getDisasterColor = (name: string) => {
     switch (name.toLowerCase()) {
       case 'flood': return 'bg-blue-500';
@@ -44,6 +44,8 @@ export default function PredictionView() {
       case 'wildfire': return 'bg-orange-500';
       case 'cyclone': return 'bg-sky-500';
       case 'landslide': return 'bg-rose-500';
+      case 'heatwave': return 'bg-red-500';
+      case 'cloudburst': return 'bg-indigo-500';
       default: return 'bg-emerald-500';
     }
   };

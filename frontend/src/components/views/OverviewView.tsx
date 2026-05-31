@@ -221,7 +221,9 @@ export default function OverviewView() {
               { id: 'earthquake', label: 'Himalayan Seismic Event (Quake)', color: 'border-purple-800 hover:border-purple-500 text-purple-400' },
               { id: 'wildfire', label: 'Uttarakhand Forest Fire (Wildfire)', color: 'border-orange-800 hover:border-orange-500 text-orange-400' },
               { id: 'cyclone', label: 'Bay of Bengal Super Cyclone', color: 'border-sky-800 hover:border-sky-500 text-sky-400' },
-              { id: 'landslide', label: 'Western Ghats Slope Failure', color: 'border-rose-800 hover:border-rose-500 text-rose-400' }
+              { id: 'landslide', label: 'Western Ghats Slope Failure', color: 'border-rose-800 hover:border-rose-500 text-rose-400' },
+              { id: 'heatwave', label: 'Rajasthan Extreme Heatwave', color: 'border-red-800 hover:border-red-500 text-red-400' },
+              { id: 'cloudburst', label: 'Delhi / Himachal Cloudburst', color: 'border-indigo-800 hover:border-indigo-500 text-indigo-400' }
             ].map((inj) => (
               <button
                 key={inj.id}

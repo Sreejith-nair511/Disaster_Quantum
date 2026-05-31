@@ -70,6 +70,18 @@ class SensorStreamSimulator:
                 # Western Ghats / Northeast India landslide scenario
                 self.state["rainfall"] = 420.0
                 self.state["land_slope"] = 42.0
+            elif self.active_hazard == "heatwave":
+                # Rajasthan / Central India extreme heat event
+                self.state["temperature"] = 49.0
+                self.state["humidity"] = 8.0
+                self.state["wind_speed"] = 25.0
+                self.state["rainfall"] = 0.0
+            elif self.active_hazard == "cloudburst":
+                # Delhi / Himachal Pradesh sudden intense rainfall
+                self.state["rainfall"] = 550.0
+                self.state["humidity"] = 99.0
+                self.state["river_level"] = 9.0
+                self.state["wind_speed"] = 65.0
 
             print(f"[SIMULATOR] India Scenario Triggered: {hazard_type.upper()} anomaly injected.")
 
@@ -96,6 +108,12 @@ class SensorStreamSimulator:
                         self.state["rainfall"] += np.random.uniform(-10.0, 10.0)
                     elif self.active_hazard == "landslide":
                         self.state["rainfall"] += np.random.uniform(-8.0, 8.0)
+                    elif self.active_hazard == "heatwave":
+                        self.state["temperature"] = np.clip(self.state["temperature"] + np.random.uniform(-0.5, 0.5), 44.0, 50.0)
+                        self.state["humidity"] = np.clip(self.state["humidity"] + np.random.uniform(-0.3, 0.3), 5.0, 12.0)
+                    elif self.active_hazard == "cloudburst":
+                        self.state["rainfall"] += np.random.uniform(-15.0, 15.0)
+                        self.state["river_level"] += np.random.uniform(-0.3, 0.3)
 
                     if self.hazard_countdown == 0:
                         print("[SIMULATOR] Hazard simulation complete. Decaying to India baseline values...")
