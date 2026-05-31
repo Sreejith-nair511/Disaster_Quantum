@@ -44,7 +44,7 @@ class DisasterRiskPredictor:
         self.rf_accuracy = float(accuracy_score(y_test, y_pred_rf))
         
         # Train Logistic Regression (for visual/accuracy comparisons in dashboard)
-        self.lr_model = LogisticRegression(max_iter=1000, random_state=42)
+        self.lr_model = LogisticRegression(max_iter=2000, random_state=42, solver='lbfgs', multi_class='auto')
         self.lr_model.fit(X_train, y_train)
         y_pred_lr = self.lr_model.predict(X_test)
         self.lr_accuracy = float(accuracy_score(y_test, y_pred_lr))
@@ -61,8 +61,8 @@ class DisasterRiskPredictor:
         if not self.is_trained:
             self.train_models()
             
-        # Format input vector
-        features = [[
+        # Format input vector as DataFrame to match training feature names
+        features = pd.DataFrame([[
             sensor_data.get('rainfall', 0.0),
             sensor_data.get('temperature', 20.0),
             sensor_data.get('humidity', 50.0),
@@ -70,7 +70,7 @@ class DisasterRiskPredictor:
             sensor_data.get('wind_speed', 10.0),
             sensor_data.get('seismic_activity', 0.0),
             sensor_data.get('land_slope', 15.0)
-        ]]
+        ]], columns=self.feature_names)
         
         # Random Forest Prediction
         probabilities = self.rf_model.predict_proba(features)[0]
