@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aegis Disaster Intelligence Platform",
-  description: "Futuristic Real-Time AI Disaster Prediction and Resource Allocation Operations Command Center",
+  title: "Aegis India Disaster Intelligence Platform",
+  description: "Real-Time AI Disaster Prediction and NDRF Resource Allocation Operations Command Center for India",
 };
 
 export default function RootLayout({

@@ -20,10 +20,10 @@ export default function OptimizerView() {
   // Dynamic Sector Severities Sliders
   const [severities, setSeverities] = useState<Record<string, number>>({
     zone_alpha: 75.0,
-    zone_beta: 45.0,
-    zone_gamma: 85.0,
-    zone_delta: 30.0,
-    zone_epsilon: 20.0
+    zone_beta: 60.0,
+    zone_gamma: 55.0,
+    zone_delta: 40.0,
+    zone_epsilon: 70.0
   });
 
   // Terminal log simulation strings
@@ -38,9 +38,9 @@ export default function OptimizerView() {
   const handleOptimize = async () => {
     setOptimizing(true);
     setLogs([
-      "[SYSTEM] Initializing Resource Allocation Command...",
-      "[INFO] Fetching environmental hazard constraints...",
-      `[INFO] Target Algorithm collapse selected: ${selectedAlgorithm.toUpperCase()}`
+      "[SYSTEM] Initializing NDRF India Resource Allocation Command...",
+      "[INFO] Fetching India disaster zone hazard constraints...",
+      `[INFO] Target Algorithm selected: ${selectedAlgorithm.toUpperCase()}`
     ]);
 
     // Fast terminal log animations
@@ -48,16 +48,16 @@ export default function OptimizerView() {
       setLogs(prev => [
         ...prev,
         "[GA-ENGINE] Initializing Quantum Chromosome phase grid in Superposition...",
-        "[GA-ENGINE] Enforcing supply pool capacity limits (Ambulances=25, Teams=18, Supplies=150t)..."
+        "[GA-ENGINE] Enforcing NDRF supply pool limits (Ambulances=40, Teams=30, Supplies=250t, Camps=120)..."
       ]);
     }, 400);
 
     setTimeout(() => {
       setLogs(prev => [
         ...prev,
-        "[EVALUATOR] Calculating logistical transit distance costs from Honolulu HQ Hub...",
+        "[EVALUATOR] Calculating logistical transit distances from NDRF HQ New Delhi...",
         "[OPTIMIZER] Running continuous phase gate rotations on Qubits (Generations 1 to 50)...",
-        "[SUCCESS] Converging optimal solution. Fitting state constraints..."
+        "[SUCCESS] Converging optimal solution. Fitting NDRF state constraints..."
       ]);
     }, 900);
 
@@ -94,13 +94,13 @@ export default function OptimizerView() {
     cost: Math.round(c.fitness)
   })) || [];
 
-  // Zone Display Metadata Map
+  // India Zone Display Metadata Map
   const ZONE_NAMES: Record<string, string> = {
-    zone_alpha: "Zone Alpha (Coastline)",
-    zone_beta: "Zone Beta (Urban Core)",
-    zone_gamma: "Zone Gamma (Nuuanu Hills)",
-    zone_delta: "Zone Delta (Pearl Harbor)",
-    zone_epsilon: "Zone Epsilon (Rural North)"
+    zone_alpha: "Zone Alpha (Mumbai Coast)",
+    zone_beta: "Zone Beta (Brahmaputra Valley)",
+    zone_gamma: "Zone Gamma (Western Ghats)",
+    zone_delta: "Zone Delta (Uttarakhand Hills)",
+    zone_epsilon: "Zone Epsilon (Odisha Coast)"
   };
 
   return (
@@ -229,9 +229,9 @@ export default function OptimizerView() {
                       <tr className="border-b border-slate-800 text-slate-400">
                         <th className="py-2.5 font-semibold">Operational Sector</th>
                         <th className="py-2.5 font-semibold text-center">🚑 Ambulances</th>
-                        <th className="py-2.5 font-semibold text-center">🚁 Helicopters</th>
+                        <th className="py-2.5 font-semibold text-center">🚁 NDRF Teams</th>
                         <th className="py-2.5 font-semibold text-center">📦 Supplies (t)</th>
-                        <th className="py-2.5 font-semibold text-center">⛺ Shelters</th>
+                        <th className="py-2.5 font-semibold text-center">⛺ Relief Camps</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-800/60 text-slate-300">

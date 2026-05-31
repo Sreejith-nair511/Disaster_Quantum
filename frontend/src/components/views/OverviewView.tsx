@@ -217,11 +217,11 @@ export default function OverviewView() {
           
           <div className="flex-1 space-y-3 overflow-y-auto pr-1">
             {[
-              { id: 'flood', label: 'Inundation Surge (Flood)', color: 'border-blue-800 hover:border-blue-500 text-blue-400' },
-              { id: 'earthquake', label: 'Tectonic Fracture (Quake)', color: 'border-purple-800 hover:border-purple-500 text-purple-400' },
-              { id: 'wildfire', label: 'Thermal Inferno (Wildfire)', color: 'border-orange-800 hover:border-orange-500 text-orange-400' },
-              { id: 'cyclone', label: 'Vortex Anomaly (Cyclone)', color: 'border-sky-800 hover:border-sky-500 text-sky-400' },
-              { id: 'landslide', label: 'Slope Failure (Landslide)', color: 'border-rose-800 hover:border-rose-500 text-rose-400' }
+              { id: 'flood', label: 'Brahmaputra Inundation (Flood)', color: 'border-blue-800 hover:border-blue-500 text-blue-400' },
+              { id: 'earthquake', label: 'Himalayan Seismic Event (Quake)', color: 'border-purple-800 hover:border-purple-500 text-purple-400' },
+              { id: 'wildfire', label: 'Uttarakhand Forest Fire (Wildfire)', color: 'border-orange-800 hover:border-orange-500 text-orange-400' },
+              { id: 'cyclone', label: 'Bay of Bengal Super Cyclone', color: 'border-sky-800 hover:border-sky-500 text-sky-400' },
+              { id: 'landslide', label: 'Western Ghats Slope Failure', color: 'border-rose-800 hover:border-rose-500 text-rose-400' }
             ].map((inj) => (
               <button
                 key={inj.id}

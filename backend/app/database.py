@@ -3,8 +3,8 @@ import os
 import json
 from datetime import datetime, timezone
 
-# Ensure the database directory exists at the root
-DB_DIR = "c:\\2026proj\\OTHER HACKATHON\\SIR WORK\\database"
+# Database stored relative to project root (works on any machine)
+DB_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "database")
 DB_PATH = os.path.join(DB_DIR, "sqlite.db")
 
 def init_db():

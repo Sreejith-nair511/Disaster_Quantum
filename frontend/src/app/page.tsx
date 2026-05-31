@@ -131,8 +131,8 @@ export default function Page() {
             <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-400 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
               <ShieldAlert className="w-6 h-6 text-cyan-400 animate-pulse" />
             </div>
-            <h1 className="text-lg font-bold tracking-widest text-slate-100 uppercase">AEGIS COMMAND PORTAL</h1>
-            <p className="text-[9px] font-mono text-cyan-400/80 tracking-widest uppercase mt-1">Strategic Operations Control Authenticator</p>
+            <h1 className="text-lg font-bold tracking-widest text-slate-100 uppercase">AEGIS INDIA COMMAND PORTAL</h1>
+            <p className="text-[9px] font-mono text-cyan-400/80 tracking-widest uppercase mt-1">NDRF Strategic Operations Control Authenticator</p>
           </div>
 
           {/* Form */}
@@ -171,11 +171,11 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Quick Presets description for hackathon review */}
             <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800/80 text-[9px] font-mono text-slate-500 leading-normal">
               <div className="text-slate-400 font-semibold mb-0.5">Demo Bypass Keys:</div>
               <div>• Command Director: <span className="text-cyan-400">admin</span> / password: <span className="text-cyan-400">admin123</span></div>
               <div>• Field Operative: <span className="text-cyan-400">field_agent</span> / password: <span className="text-cyan-400">field123</span></div>
+              <div className="mt-1 text-slate-600">NDRF India Disaster Intelligence Platform</div>
             </div>
 
             <button
@@ -190,7 +190,7 @@ export default function Page() {
           {/* Footer Insignia */}
           <div className="flex items-center justify-center gap-1.5 mt-6 pt-4 border-t border-slate-900 text-[8px] font-mono text-slate-600 tracking-wider">
             <Terminal className="w-3 h-3" />
-            <span>AEGIS PLATFORM SECURED NODE // SEC-VER: 1.0.8</span>
+            <span>AEGIS INDIA PLATFORM SECURED NODE // SEC-VER: 2.0.0</span>
           </div>
         </div>
       </main>
@@ -209,8 +209,8 @@ export default function Page() {
             <ShieldCheck className="w-5 h-5 text-cyan-400 animate-pulse" />
           </div>
           <div>
-            <h1 className="text-xs font-bold tracking-widest text-slate-100 font-sans uppercase">AEGIS OPERATIONS CENTER</h1>
-            <p className="text-[8px] font-mono text-slate-400 tracking-wider uppercase">National Disaster Intelligence Network</p>
+            <h1 className="text-xs font-bold tracking-widest text-slate-100 font-sans uppercase">AEGIS INDIA OPERATIONS CENTER</h1>
+            <p className="text-[8px] font-mono text-slate-400 tracking-wider uppercase">National Disaster Intelligence Network — NDRF</p>
           </div>
         </div>
 
@@ -251,7 +251,7 @@ export default function Page() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse neon-pulse-dot"></span>
-                  <span>Hawaii Telemetry Stream: LIVE</span>
+                  <span>India Telemetry Stream: LIVE</span>
                 </div>
               </div>
             </div>

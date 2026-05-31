@@ -197,7 +197,7 @@ export default function AnalyticsView() {
                 </div>
               </div>
               <div className="text-[10px] font-mono text-slate-500 text-center uppercase tracking-wider mt-4">
-                TRAINING SET: 5,000 COMBINATIONS | SPLIT: 80/20
+                TRAINING SET: 5,000 INDIA SCENARIOS | SPLIT: 80/20
               </div>
             </div>
 

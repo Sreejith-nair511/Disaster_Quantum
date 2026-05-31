@@ -1,24 +1,52 @@
 import numpy as np
 from typing import Dict, List, Tuple
 
-# Resources available in the central emergency operations hub
+# Resources available at the National Disaster Response Force (NDRF) central hub — New Delhi
 TOTAL_RESOURCES = {
-    "ambulances": 25,          # Units (Integer)
-    "rescue_teams": 18,        # Units (Integer)
-    "medical_supplies": 150.0, # Tons (Continuous)
-    "shelters": 60             # Capacity units (Integer)
+    "ambulances": 40,          # Units (Integer) — scaled for India's population density
+    "rescue_teams": 30,        # Units (Integer) — NDRF battalions
+    "medical_supplies": 250.0, # Tons (Continuous)
+    "shelters": 120            # Capacity units (Integer) — relief camps
 }
 
-# 5 Disaster sectors with coordinates and baseline demands
+# 5 India disaster zones — real high-risk regions mapped to grid coordinates
+# Grid origin (0,0) = SW corner; x = longitude offset, y = latitude offset (degrees * 10)
+# Hub = New Delhi (28.6°N, 77.2°E) → grid (77.2, 28.6)
 ZONES = [
-    {"id": "zone_alpha", "name": "Zone Alpha (Coastline)", "x": 12.0, "y": 8.0, "demand": {"ambulances": 8, "rescue_teams": 6, "medical_supplies": 45.0, "shelters": 20}},
-    {"id": "zone_beta", "name": "Zone Beta (Urban Core)", "x": 22.0, "y": 35.0, "demand": {"ambulances": 12, "rescue_teams": 5, "medical_supplies": 50.0, "shelters": 15}},
-    {"id": "zone_gamma", "name": "Zone Gamma (Hills/Valleys)", "x": 5.0, "y": 45.0, "demand": {"ambulances": 5, "rescue_teams": 8, "medical_supplies": 40.0, "shelters": 25}},
-    {"id": "zone_delta", "name": "Zone Delta (Industrial Zone)", "x": 45.0, "y": 18.0, "demand": {"ambulances": 6, "rescue_teams": 4, "medical_supplies": 30.0, "shelters": 10}},
-    {"id": "zone_epsilon", "name": "Zone Epsilon (Rural North)", "x": 30.0, "y": 55.0, "demand": {"ambulances": 4, "rescue_teams": 3, "medical_supplies": 20.0, "shelters": 12}}
+    {
+        "id": "zone_alpha",
+        "name": "Zone Alpha (Mumbai Coast — Maharashtra)",
+        "x": 72.8, "y": 19.1,
+        "demand": {"ambulances": 14, "rescue_teams": 10, "medical_supplies": 80.0, "shelters": 35}
+    },
+    {
+        "id": "zone_beta",
+        "name": "Zone Beta (Brahmaputra Valley — Assam)",
+        "x": 91.7, "y": 26.1,
+        "demand": {"ambulances": 12, "rescue_teams": 9, "medical_supplies": 70.0, "shelters": 30}
+    },
+    {
+        "id": "zone_gamma",
+        "name": "Zone Gamma (Western Ghats — Kerala)",
+        "x": 76.3, "y": 10.5,
+        "demand": {"ambulances": 8, "rescue_teams": 7, "medical_supplies": 50.0, "shelters": 25}
+    },
+    {
+        "id": "zone_delta",
+        "name": "Zone Delta (Himalayan Foothills — Uttarakhand)",
+        "x": 79.1, "y": 30.3,
+        "demand": {"ambulances": 7, "rescue_teams": 6, "medical_supplies": 35.0, "shelters": 20}
+    },
+    {
+        "id": "zone_epsilon",
+        "name": "Zone Epsilon (Odisha Cyclone Coast)",
+        "x": 85.8, "y": 20.5,
+        "demand": {"ambulances": 10, "rescue_teams": 8, "medical_supplies": 60.0, "shelters": 28}
+    }
 ]
 
-CENTRAL_HUB = {"x": 25.0, "y": 30.0}
+# NDRF National Command Hub — New Delhi
+CENTRAL_HUB = {"x": 77.2, "y": 28.6}
 
 def calculate_distance(p1: dict, p2: dict) -> float:
     """Euclidean distance representing transit cost."""
