@@ -104,10 +104,11 @@ const initialTelemetry: Telemetry = {
 };
 
 export const useStore = create<AppState>((set) => ({
-  // Auth State initializers
-  user: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('aegis_user') || 'null') : null,
-  token: typeof window !== 'undefined' ? localStorage.getItem('aegis_token') : null,
-  isAuthenticated: typeof window !== 'undefined' ? !!localStorage.getItem('aegis_token') : false,
+  // Auth State — always start as unauthenticated for SSR safety.
+  // Client rehydration from localStorage happens in page.tsx via useEffect.
+  user: null,
+  token: null,
+  isAuthenticated: false,
   
   // Telemetry & Predictions
   telemetry: initialTelemetry,

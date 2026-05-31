@@ -28,6 +28,34 @@ export default function Page() {
   // Client-side Navigation
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
+  // Hydration guard — prevents SSR/client mismatch.
+  // Server always renders null (no localStorage). Client rehydrates after mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // Rehydrate auth state from localStorage on client mount
+    const storedToken = localStorage.getItem('aegis_token');
+    const storedUser = localStorage.getItem('aegis_user');
+    if (storedToken && storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setAuth(parsedUser, storedToken);
+      } catch {
+        localStorage.removeItem('aegis_token');
+        localStorage.removeItem('aegis_user');
+      }
+    }
+    setMounted(true);
+  }, []);
+
+  // Render nothing until client has mounted — avoids hydration mismatch entirely
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   // Login Local States
   const [username, setUsername] = useState('admin'); // pre-fill demo admin for hackathon convenience
   const [password, setPassword] = useState('admin123');
