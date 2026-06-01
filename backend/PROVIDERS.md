@@ -27,7 +27,7 @@ This document explains how to enable real delivery providers for email, SMS, and
 
 3) WhatsApp-style messages
 - Files: `backend/app/providers/whatsapp_provider.py`
-- This adapter is implemented to use Twilio WhatsApp if Twilio credentials and `TWILIO_WHATSAPP_FROM` are provided. Otherwise it simulates delivery for development.
+- This adapter is implemented to use Twilio WhatsApp when `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_WHATSAPP_FROM` are provided. When not configured it operates in development mode and records delivery logs locally so the rest of the system can be tested without an external provider.
 - Env vars to set for real delivery:
   - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` (as above)
   - `TWILIO_WHATSAPP_FROM` — your Twilio WhatsApp-enabled sender (e.g., +1415XXXXXXX)
