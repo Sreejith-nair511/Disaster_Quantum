@@ -40,29 +40,39 @@ def send_notification(req: SendNotificationRequest, background_tasks: Background
     record = log_notification(req.channel, req.recipient, req.region, req.severity, req.title, req.message, req.metadata)
 
     # Schedule provider delivery in background
+    # Schedule providers for email/sms/whatsapp in background and log QUEUED state
     try:
-        # Lazy import provider so package is optional
-        from backend.app.providers.sendgrid_provider import send_email_notification
+        import sqlite3
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
 
         if req.channel == "email" and req.recipient:
-            # schedule send in background
+            from backend.app.providers.sendgrid_provider import send_email_notification
             background_tasks.add_task(send_email_notification, record)
-            # Log a 'QUEUED' delivery log
-            import sqlite3
-            conn = sqlite3.connect(DB_PATH)
-            cursor = conn.cursor()
             cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
                            (record["id"], req.channel, req.recipient or '', 'QUEUED', datetime.now(timezone.utc).isoformat(), json.dumps({})))
-            conn.commit()
-            conn.close()
+
+        elif req.channel == "sms" and req.recipient:
+            from backend.app.providers.twilio_provider import send_sms_notification
+            background_tasks.add_task(send_sms_notification, record)
+            cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
+                           (record["id"], req.channel, req.recipient or '', 'QUEUED', datetime.now(timezone.utc).isoformat(), json.dumps({})))
+
+        elif req.channel == "whatsapp" and req.recipient:
+            from backend.app.providers.whatsapp_provider import send_whatsapp_notification
+            background_tasks.add_task(send_whatsapp_notification, record)
+            cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
+                           (record["id"], req.channel, req.recipient or '', 'QUEUED', datetime.now(timezone.utc).isoformat(), json.dumps({})))
+
+        conn.commit()
+        conn.close()
     except Exception:
-        # If provider missing or fails, record as undelivered
         try:
             import sqlite3
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
             cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
-                           (record["id"], req.channel, req.recipient or '', 'FAILED', datetime.now(timezone.utc).isoformat(), json.dumps({"error": "provider-missing"})))
+                           (record["id"], req.channel, req.recipient or '', 'FAILED', datetime.now(timezone.utc).isoformat(), json.dumps({"error": "provider-schedule-failed"})))
             conn.commit()
             conn.close()
         except Exception:
