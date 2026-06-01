@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import Optional
 import json
@@ -32,25 +32,41 @@ class AcknowledgeRequest(BaseModel):
 
 
 @router.post("/send")
-def send_notification(req: SendNotificationRequest):
+def send_notification(req: SendNotificationRequest, background_tasks: BackgroundTasks):
     # Import DB helpers lazily to avoid circular imports during app startup
     from backend.app.database import log_notification
 
     # Log notification
     record = log_notification(req.channel, req.recipient, req.region, req.severity, req.title, req.message, req.metadata)
 
-    # Simulate delivery: in production this would enqueue SMS/Email/Push/Voice
-    # For now, write a delivery_logs entry if DB is available
+    # Schedule provider delivery in background
     try:
-        import sqlite3
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
-                       (record["id"], req.channel, req.recipient or '', 'SENT', datetime.now(timezone.utc).isoformat(), json.dumps({})))
-        conn.commit()
-        conn.close()
+        # Lazy import provider so package is optional
+        from backend.app.providers.sendgrid_provider import send_email_notification
+
+        if req.channel == "email" and req.recipient:
+            # schedule send in background
+            background_tasks.add_task(send_email_notification, record)
+            # Log a 'QUEUED' delivery log
+            import sqlite3
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
+                           (record["id"], req.channel, req.recipient or '', 'QUEUED', datetime.now(timezone.utc).isoformat(), json.dumps({})))
+            conn.commit()
+            conn.close()
     except Exception:
-        pass
+        # If provider missing or fails, record as undelivered
+        try:
+            import sqlite3
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO delivery_logs (notification_id, channel, recipient, status, timestamp, details) VALUES (?, ?, ?, ?, ?, ?)",
+                           (record["id"], req.channel, req.recipient or '', 'FAILED', datetime.now(timezone.utc).isoformat(), json.dumps({"error": "provider-missing"})))
+            conn.commit()
+            conn.close()
+        except Exception:
+            pass
 
     return {"status": "queued", "notification": record}
 
