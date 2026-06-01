@@ -72,8 +72,8 @@ export default function NotificationCenter() {
       </div>
 
       <form onSubmit={handleSubscribe} className="flex gap-2">
-        <input value={contact} onChange={(e) => setContact(e.target.value)} placeholder="Phone/email" className="flex-1 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-xs" />
-        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="px-2 py-1 rounded bg-slate-950 border border-slate-800 text-xs">
+        <input aria-label="Contact info" value={contact} onChange={(e) => setContact(e.target.value)} placeholder="Phone/email" className="flex-1 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-xs" />
+        <select aria-label="Notification channel" value={channel} onChange={(e) => setChannel(e.target.value)} className="px-2 py-1 rounded bg-slate-950 border border-slate-800 text-xs">
           <option value="sms">SMS</option>
           <option value="email">Email</option>
           <option value="whatsapp">WhatsApp</option>
