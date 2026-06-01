@@ -14,6 +14,7 @@ from backend.app.database import (
     init_db, log_telemetry, log_alert, get_active_alerts, 
     get_telemetry_history, log_allocation, get_allocation_history
 )
+from backend.app.notifications import router as notifications_router
 from ml.model import predictor_instance
 from simulation.sensor_sim import sensor_simulator
 
@@ -82,6 +83,9 @@ async def startup_event():
     
     # 4. Start background loop to save logs and auto-trigger alerts based on telemetry
     asyncio.create_task(database_and_alert_loop())
+
+# Mount notifications router (alerts send/history/subscribe/ack)
+app.include_router(notifications_router, prefix="/api/alerts", tags=["alerts"])
 
 @app.on_event("shutdown")
 def shutdown_event():
@@ -244,6 +248,51 @@ def trigger_anomaly(req: TriggerAnomalyRequest):
     """Allows manual scenario-injection from the operations dashboard."""
     sensor_simulator.trigger_hazard_anomaly(req.hazard_type)
     return {"status": "success", "message": f"{req.hazard_type.upper()} environmental anomaly injected successfully."}
+
+
+# ----------------- INTENT / STT HANDLER -----------------
+class IntentRequest(BaseModel):
+    text: str
+    intent: Optional[str] = None
+    metadata: Optional[dict] = None
+
+
+@app.post("/api/intent")
+def handle_intent(req: IntentRequest):
+    """Centralized intent handler for STT-driven actions. Logs intent and executes simulated actions."""
+    try:
+        from backend.app.database import log_intent, log_notification
+
+        # Log the intent for audit
+        intent_record = log_intent(req.text, req.intent or '', None, req.metadata or {})
+
+        # Simple action routing
+        if req.intent == 'dial_108' or (req.metadata and req.metadata.get('action') == 'dial_108'):
+            # Simulate dialing emergency number by creating a notification log
+            note = log_notification('sms', '108', None, 'CRITICAL', 'Emergency Call', 'Dialing emergency services (108) - simulated', {'source': 'intent'})
+            return {"status": "ok", "action": "dial_108", "message": "Dialed 108 (simulated)", "intent": intent_record, "notification": note}
+
+        if req.intent == 'trigger_hazard' or (req.metadata and req.metadata.get('hazard_type')):
+            hazard = ''
+            if req.metadata and req.metadata.get('hazard_type'):
+                hazard = req.metadata.get('hazard_type')
+            elif isinstance(req.text, str):
+                hazard = req.text
+            # Trigger existing anomaly mechanism
+            try:
+                sensor_simulator.trigger_hazard_anomaly(hazard)
+            except Exception:
+                pass
+            return {"status": "ok", "action": "trigger_hazard", "message": f"{hazard} environmental anomaly triggered (simulated)", "intent": intent_record}
+
+        if req.intent == 'activate_quantum_module' or (req.metadata and req.metadata.get('action') == 'activate_quantum'):
+            # Simulate activating quantum optimizer module
+            return {"status": "ok", "action": "activate_quantum_module", "message": "Quantum resource optimizer activated (simulated)", "intent": intent_record}
+
+        # Unknown / fallback
+        return {"status": "ok", "action": "none", "message": "Intent received and logged.", "intent": intent_record}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/alerts")
 def get_alerts():

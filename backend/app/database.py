@@ -95,6 +95,18 @@ def init_db():
     )
     """)
 
+    # 5. Intent logs for STT/NLU actions
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS intent_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp TEXT NOT NULL,
+        text TEXT NOT NULL,
+        intent TEXT,
+        confidence REAL,
+        metadata TEXT
+    )
+    """)
+
     # Seed realistic India demo alerts if the table is empty
     cursor.execute("SELECT COUNT(*) FROM alert_logs WHERE resolved = 0")
     active_count = cursor.fetchone()[0]
@@ -241,6 +253,27 @@ def log_notification(channel: str, recipient: str | None, region: str | None, se
         "title": title,
         "message": message,
         "delivered": 0,
+        "metadata": metadata or {}
+    }
+
+
+def log_intent(text: str, intent: str | None = None, confidence: float | None = None, metadata: dict | None = None) -> dict:
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    timestamp = datetime.now(timezone.utc).isoformat()
+    cursor.execute("""
+    INSERT INTO intent_logs (timestamp, text, intent, confidence, metadata)
+    VALUES (?, ?, ?, ?, ?)
+    """, (timestamp, text, intent or '', confidence or 0.0, json.dumps(metadata or {})))
+    intent_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return {
+        "id": intent_id,
+        "timestamp": timestamp,
+        "text": text,
+        "intent": intent,
+        "confidence": confidence,
         "metadata": metadata or {}
     }
 

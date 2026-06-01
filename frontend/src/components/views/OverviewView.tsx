@@ -7,6 +7,8 @@ import {
   CloudRain, Thermometer, Droplet, Waves, Wind, Activity, 
   ShieldAlert, AlertTriangle, Play, RefreshCw, CheckCircle 
 } from 'lucide-react';
+import NotificationCenter from '@/components/NotificationCenter';
+import SpeechPanel from '@/components/SpeechPanel';
 
 export default function OverviewView() {
   const telemetry = useStore((state) => state.telemetry);
@@ -91,6 +93,16 @@ export default function OverviewView() {
         <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono">
           <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse neon-pulse-dot"></span>
           <span className="text-slate-300">WEBSOCKET CHANNEL ACTIVE</span>
+        </div>
+      </div>
+
+      {/* Notification Center (demo) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <NotificationCenter />
+        </div>
+        <div>
+          <SpeechPanel />
         </div>
       </div>
 
