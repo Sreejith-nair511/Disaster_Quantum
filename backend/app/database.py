@@ -51,7 +51,49 @@ def init_db():
     )
     """)
 
+
     conn.commit()
+
+    # 4. Notifications & Subscriptions
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp TEXT NOT NULL,
+        channel TEXT NOT NULL,
+        recipient TEXT,
+        region TEXT,
+        severity TEXT,
+        title TEXT,
+        message TEXT NOT NULL,
+        delivered INTEGER DEFAULT 0,
+        metadata TEXT
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT,
+        contact TEXT NOT NULL,
+        channel TEXT NOT NULL,
+        region TEXT,
+        active INTEGER DEFAULT 1,
+        preferences TEXT
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS delivery_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        notification_id INTEGER,
+        channel TEXT,
+        recipient TEXT,
+        status TEXT,
+        timestamp TEXT NOT NULL,
+        details TEXT,
+        FOREIGN KEY(notification_id) REFERENCES notifications(id)
+    )
+    """)
 
     # Seed realistic India demo alerts if the table is empty
     cursor.execute("SELECT COUNT(*) FROM alert_logs WHERE resolved = 0")
@@ -175,6 +217,74 @@ def log_alert(hazard_type: str, severity: str, message: str) -> dict:
         "message": message,
         "resolved": 0
     }
+
+
+def log_notification(channel: str, recipient: str | None, region: str | None, severity: str | None, title: str, message: str, metadata: dict | None = None) -> dict:
+    """Logs a notification to the database and returns the record."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    timestamp = datetime.now(timezone.utc).isoformat()
+    cursor.execute("""
+    INSERT INTO notifications (timestamp, channel, recipient, region, severity, title, message, delivered, metadata)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
+    """, (timestamp, channel, recipient, region, severity or '', title, message, json.dumps(metadata or {})))
+    notification_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return {
+        "id": notification_id,
+        "timestamp": timestamp,
+        "channel": channel,
+        "recipient": recipient,
+        "region": region,
+        "severity": severity,
+        "title": title,
+        "message": message,
+        "delivered": 0,
+        "metadata": metadata or {}
+    }
+
+
+def get_notification_history(limit: int = 50) -> list:
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM notifications ORDER BY id DESC LIMIT ?", (limit,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def add_subscription(contact: str, channel: str, region: str | None = None, user_id: str | None = None, preferences: dict | None = None) -> dict:
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO subscriptions (user_id, contact, channel, region, active, preferences) VALUES (?, ?, ?, ?, 1, ?)",
+                   (user_id, contact, channel, region, json.dumps(preferences or {})))
+    sub_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return {"id": sub_id, "user_id": user_id, "contact": contact, "channel": channel, "region": region, "active": 1, "preferences": preferences or {}}
+
+
+def get_subscriptions(region: str | None = None) -> list:
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    if region:
+        cursor.execute("SELECT * FROM subscriptions WHERE region = ? AND active = 1", (region,))
+    else:
+        cursor.execute("SELECT * FROM subscriptions WHERE active = 1")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def acknowledge_notification(notification_id: int) -> None:
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("UPDATE notifications SET delivered = 1 WHERE id = ?", (notification_id,))
+    conn.commit()
+    conn.close()
 
 def get_active_alerts() -> list:
     """Retrieves all unresolved alerts."""
